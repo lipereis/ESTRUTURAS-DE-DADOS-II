@@ -1,7 +1,9 @@
 /*UNIVERSIDADE FEDERAL DA FRONTEIRA SUL
  *DISCENTE: FILIPE DOS REIS SANTOS - 1521100007
  *DOCENTE: RICARDO
- *DISCIPLINA: ESTRUTURAS DE DADOS II
+ *DISCIPLINA: ESTRUTURAS DE DADOS II - 2017/2
+ 
+ OBS: Professor eu utilizei o inglês para escrever esse código para fins de prática da língua, pois a estudo também.
  */
 
 #include <stdio.h>
