@@ -94,37 +94,62 @@ NodoDelArbol *InsercionEnElArbol(NodoDelArbol *arbolPtr, int informacion){
 	return arbolPtr;
 }
 
+//función que realmente retira un elemento del árbol
+NodoDelArbol *RetirarActual(NodoDelArbol *actual){
+	NodoDelArbol *nodo1, *nodo2;
+
+	if(actual->izquierda == NULL){
+		nodo2 = actual->derecha;
+		free(actual);
+		return nodo2;
+	}
+	nodo1 = actual;
+	nodo2 = actual->izquierda;
+	while(nodo2->derecha != NULL){
+		nodo1 = nodo2;
+		nodo2 = nodo2->derecha;
+	}
+
+	if(nodo1 != actual){
+		nodo1->derecha = nodo2->izquierda;
+		nodo2->izquierda = actual->izquierda;
+	}
+
+	nodo2->derecha = actual->derecha;
+	free(actual);
+	return nodo2;
+}
+
+
 //función que hace la exclusión
-NodoDelArbol *RetirarUnElementoDelArbol(NodoDelArbol *arbolPtr, int informacion){
-		if(arbolPtr == NULL){
-				return NULL;
-		}else if(arbolPtr->informacion > informacion){
-				arbolPtr->izquierda = RetirarUnElementoDelArbol(arbolPtr->izquierda, informacion);
-		}else if(arbolPtr->informacion < informacion){
-				arbolPtr->derecha = RetirarUnElementoDelArbol(arbolPtr->derecha, informacion);
-		}else{//encontraste el elemento para remoción
-				if(arbolPtr->izquierda == NULL && arbolPtr->derecha == NULL){
-						free(arbolPtr);
-						arbolPtr = NULL;
-				}else if( arbolPtr->izquierda == NULL){
-						NodoDelArbol *temp = arbolPtr;
-						arbolPtr = arbolPtr->derecha;
-						free(temp);
-				}else if(arbolPtr->derecha){
-						NodoDelArbol *temp = arbolPtr;
-						arbolPtr = arbolPtr->izquierda;
-						free(temp);
-				}else{
-						NodoDelArbol *temp = arbolPtr->izquierda;
-						while(temp->derecha != NULL){
-								temp = temp->derecha;
-						}
-						arbolPtr->informacion = temp->informacion;
-						temp->informacion = informacion;
-						arbolPtr->izquierda = RetirarUnElementoDelArbol(arbolPtr->izquierda, informacion);
-				}
+int RetirarUnElementoDelArbol(RaizDelArbol *raizPtr, int informacion){
+		if(raizPtr == NULL){
+				return 0;
 		}
-	return arbolPtr;
+		NodoDelArbol *anterior = NULL;
+		NodoDelArbol *actual  = raizPtr->raiz;
+		while(actual != NULL){
+			if(informacion == actual->informacion){
+				if (actual == raizPtr->raiz){
+					raizPtr->raiz = RetirarActual(actual);
+				}else{
+					if(anterior->derecha == actual){
+						anterior->derecha = RetirarActual(actual);
+					}else{
+						anterior->izquierda = RetirarActual(actual);
+					}
+
+				}
+				return 1;
+
+			}
+			anterior = actual;
+			if(informacion > actual->informacion){
+				actual = actual->derecha;
+			}else{
+				actual = actual->izquierda;
+			}
+		}
 }
 
 //El menú del código
@@ -161,7 +186,9 @@ int main( void ){
 					puts("Insira el valor:");
 					scanf("%d", &valor);
 					printf("\n");
-					raiz->raiz = RetirarUnElementoDelArbol(raiz->raiz, valor);
+					if(RetirarUnElementoDelArbol(raiz, valor)){
+						printf("ok\n");
+					}
 					break;
 					
 				case 3:
